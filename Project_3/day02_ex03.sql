@@ -1,0 +1,11 @@
+WITH mis_date AS (SELECT missing_date::date
+		FROM generate_series('2022-01-01'::date, '2022-01-10'::date, '1 day') AS missing_date
+		LEFT JOIN (SELECT visit_date
+                        FROM person_visits pv
+                        WHERE (pv.person_id = 1 OR pv.person_id = 2)
+                        AND (pv.visit_date BETWEEN '2022-01-01' AND '2022-01-10')) AS p
+        	ON missing_date = p.visit_date
+		WHERE p.visit_date IS NULL
+		ORDER BY missing_date)
+
+SELECT * FROM mis_date;
